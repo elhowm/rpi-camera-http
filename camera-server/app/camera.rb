@@ -10,7 +10,7 @@ class Camera
 
   def initialize(logger: nil)
     @logger = logger || ::ColorizedLogger.new
-    @run_cmd = ENV.fetch('UDP_MODE', 'false') == 'true' ? run_http : run_udp
+    @run_cmd = ENV.fetch('UDP_MODE', 'false') == 'true' ? run_udp : run_http
   end
 
   def run?
@@ -41,8 +41,9 @@ class Camera
     logger.info("Executing '#{cmd}'")
 
     Dir.chdir(APP_ROOT) do
-      Open3.popen2(cmd) do |_stdin, _stdout, wait_thread|
-        pid_handler&.call(wait_thread.pid)
+      Open3.pipeline_start(cmd) do |ts|
+        process = ts[0]
+        pid_handler&.call(process.pid)
       end
     end
 
@@ -54,10 +55,10 @@ class Camera
   end
 
   def run_http
-    'libcamera-vid -t 0 --width 1920 --height 1080 --inline --listen -o tcp://0.0.0.0:8080'
+    'libcamera-vid -t 0 --verbose 0 --width 1920 --height 1080 --inline --listen -o tcp://0.0.0.0:8080'
   end
 
   def run_udp
-    'libcamera-vid -t 0 --width 1920 --height 1080 --inline -o udp://0.0.0.0:8080'
+    'libcamera-vid -t 0 --verbose 0 --width 1920 --height 1080 --inline -o udp://0.0.0.0:8080'
   end
 end

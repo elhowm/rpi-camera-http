@@ -13,8 +13,12 @@ class Camera
     @run_cmd = ENV.fetch('UDP_MODE', 'false') == 'true' ? run_http : run_udp
   end
 
+  def run?
+    File.exist?(PID_LOCATION)
+  end
+
   def run
-    return false if already_running?
+    return false if run?
 
     execute(run_cmd, pid_handler: ->(pid) { File.write(PID_LOCATION, pid) })
     true
@@ -43,10 +47,6 @@ class Camera
     end
 
     logger.success('Done')
-  end
-
-  def already_running?
-    File.exist?(PID_LOCATION)
   end
 
   def no_pid?

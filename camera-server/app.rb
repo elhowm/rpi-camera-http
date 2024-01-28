@@ -2,6 +2,7 @@
 
 require 'roda'
 require 'dotenv/load'
+require 'json'
 
 APP_ROOT = __dir__.freeze
 
@@ -17,6 +18,10 @@ class App < ::Roda
 
   route do |r|
     r.on 'camera' do
+      r.get do
+        JSON.dump({ running: Camera.instance.run? })
+      end
+
       r.post do
         if Camera.instance.run
           response.status = 200

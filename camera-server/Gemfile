@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+gem 'colorize'
+gem 'dotenv'
+gem 'puma'
+gem 'roda'
+
+group :development do
+  gem 'pry'
+  gem 'rubocop'
+end

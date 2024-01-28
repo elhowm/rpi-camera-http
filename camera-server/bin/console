@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'pry'
+require_relative '../app'
+
+puts <<-TEXT
+  Welcome to CameraServer console!\n
+TEXT
+
+pry
